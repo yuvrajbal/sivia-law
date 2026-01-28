@@ -1,11 +1,19 @@
 "use client";
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 
-export default function Header() {
+type HeaderProps = {
+  linkPrefix?: string;
+};
+
+export default function Header({ linkPrefix = "" }: HeaderProps) {
   const [navOpen, setNavOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  const withPrefix = (hash: string) => `${linkPrefix}${hash}`;
+  const shouldHighlightContact = linkPrefix.length === 0;
 
   useEffect(() => {
     setMounted(true);
@@ -31,13 +39,24 @@ export default function Header() {
             >
               <X className="w-7 h-7 text-[#1D2B53]" />
             </button>
-            <nav className="flex flex-col gap-6 items-center text-[#1D2B53] text-xl font-semibold mt-4 font-serif">
-              <a href="#" onClick={() => setNavOpen(false)} className="hover:text-[#2E8B57] transition">Home</a>
-              <a href="#about" onClick={() => setNavOpen(false)} className="hover:text-[#2E8B57] transition">About</a>
-              <a href="#services" onClick={() => setNavOpen(false)} className="hover:text-[#2E8B57] transition">Services</a>
-              <a href="#testimonials" onClick={() => setNavOpen(false)} className="hover:text-[#2E8B57] transition">Testimonials</a>
-              <a href="#contact" onClick={() => setNavOpen(false)} className="hover:text-[#2E8B57] transition">Contact</a>
-              <a href="#contact" onClick={() => setNavOpen(false)} className="mt-6 px-6 py-2 rounded-full bg-[#2E8B57] text-white font-bold shadow hover:bg-[#256d46] transition text-center text-base font-serif">Book Consultation</a>
+            <nav className="flex flex-col gap-6 items-center text-[#1D2B53] text-xl font-semibold mt-4 font-sans">
+              <a href={withPrefix("#")} onClick={() => setNavOpen(false)} className="hover:text-[#2E8B57] transition">Home</a>
+              <a href={withPrefix("#about")} onClick={() => setNavOpen(false)} className="hover:text-[#2E8B57] transition">About</a>
+              <a href={withPrefix("#services")} onClick={() => setNavOpen(false)} className="hover:text-[#2E8B57] transition">Services</a>
+              <a href={withPrefix("#testimonials")} onClick={() => setNavOpen(false)} className="hover:text-[#2E8B57] transition">Testimonials</a>
+              <a href={withPrefix("#contact")} onClick={() => setNavOpen(false)} className="hover:text-[#2E8B57] transition">Contact</a>
+              <a
+                href={withPrefix("#contact")}
+                onClick={() => {
+                  setNavOpen(false);
+                  if (shouldHighlightContact) {
+                    window.dispatchEvent(new Event("contact-highlight"));
+                  }
+                }}
+                className="mt-6 px-6 py-2 rounded-full bg-[#2E8B57] text-white font-bold shadow hover:bg-[#256d46] transition text-center text-base font-sans"
+              >
+                Book Consultation
+              </a>
             </nav>
           </div>
         </div>,
@@ -50,19 +69,31 @@ export default function Header() {
       <header className="sticky top-0 z-30 bg-white/90 border-b border-[#E5E7EB] backdrop-blur flex items-center justify-between px-4 md:px-12 py-3">
         {/* Logo on the left */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="text-2xl font-bold text-[#1D2B53] tracking-tight font-serif">Sivia Law Firm</span>
+          <Link href="/" className="text-2xl font-bold text-[#1D2B53] tracking-tight font-serif">
+            Sivia Law
+          </Link>
         </div>
         {/* Nav links in the center (desktop) */}
-        <nav className="hidden lg:flex gap-8 items-center text-[#2C2C2C] font-medium mx-auto font-serif">
-          <a href="#" className="hover:text-[#2E8B57] transition">Home</a>
-          <a href="#about" className="hover:text-[#2E8B57] transition">About</a>
-          <a href="#services" className="hover:text-[#2E8B57] transition">Services</a>
-          <a href="#testimonials" className="hover:text-[#2E8B57] transition">Testimonials</a>
-          <a href="#contact" className="hover:text-[#2E8B57] transition">Contact</a>
+        <nav className="hidden lg:flex gap-8 items-center text-[#2C2C2C] font-medium mx-auto font-sans">
+          <a href={withPrefix("#")} className="hover:text-[#2E8B57] transition">Home</a>
+          <a href={withPrefix("#about")} className="hover:text-[#2E8B57] transition">About</a>
+          <a href={withPrefix("#services")} className="hover:text-[#2E8B57] transition">Services</a>
+          <a href={withPrefix("#testimonials")} className="hover:text-[#2E8B57] transition">Testimonials</a>
+          <a href={withPrefix("#contact")} className="hover:text-[#2E8B57] transition">Contact</a>
         </nav>
         {/* CTA on the right (desktop) */}
         <div className="hidden lg:flex flex-shrink-0">
-          <a href="#contact" className="px-5 py-2 rounded-full bg-[#2E8B57] text-white font-bold shadow hover:bg-[#256d46] transition font-serif">Book Consultation</a>
+          <a
+            href={withPrefix("#contact")}
+            onClick={() => {
+              if (shouldHighlightContact) {
+                window.dispatchEvent(new Event("contact-highlight"));
+              }
+            }}
+            className="px-5 py-2 rounded-full bg-[#2E8B57] text-white font-bold shadow hover:bg-[#256d46] transition font-sans"
+          >
+            Book Consultation
+          </a>
         </div>
         {/* Mobile Hamburger */}
         <button
