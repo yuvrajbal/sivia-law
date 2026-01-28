@@ -27,9 +27,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Calgary Family & Real Estate Lawyers | Sivia Law Firm",
+  title: "Family & Real Estate Lawyers in Calgary | Sivia Law Firm",
   description:
     "Experienced legal guidance for family and real estate matters in Calgary. Free consultations available.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
